@@ -16,9 +16,11 @@ const channelSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    videos:[{ type: mongoose.Schema.Types.ObjectId, ref='videos'}],
     type:{
         type: String
     },
+    isMonotized: Boolean,
     created_at: Date.now,
     
 
