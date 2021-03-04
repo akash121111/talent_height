@@ -71,7 +71,7 @@ router.post('/register',function(req,res){
                     if(!isMatch) return res.json({ isAuth : false,message : "password doesn't match"});
         
                 user.generateToken((err,user)=>{
-                    if(err) return res.status(400).send(err);
+                    if(err) return res.status(400).json({err});
                     res.cookie('auth',user.token).json({
                         isAuth : true,
                         id : user._id
