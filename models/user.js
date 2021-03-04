@@ -1,16 +1,24 @@
-
 const jwt=require('jsonwebtoken');
 const confiq=require('../config/config').get(process.env.NODE_ENV);
-const salt=10;
+const bcrypt = require('bcrypt');
+const SALT=10;
 
 var mongoose=require('mongoose');
 
 const userSchema=mongoose.Schema({
     
-    username:{
+    firstName:{
         type: String,
-        required: true,
         maxlength: 100
+    },
+    username: {
+        type: String,
+        maxlength: 100,
+        required: true
+    },
+    lastname:{
+        type: String,
+        maxlength:100
     },
     email:{
         type: String,
@@ -23,14 +31,53 @@ const userSchema=mongoose.Schema({
         required: true,
         minlength:8
     },
-
-
+    role:{
+        type: String,
+        default: 'user',
+        enum: ['user', 'creator', 'admin']
+    },
+    image:{
+        type: String,
+    },
+    channels:[{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'channels',
+        required: () =>{
+            return this.role == 'creator';
+        }
+    }],
+    wallet:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'wallets'
+    },
+    viewcount:{
+        type: Number,
+        default: 0,
+    },
     token:{
         type: String
     }
 });
 
-module.exports=mongoose.model('User',userSchema);
+userSchema.pre('save', function(next) {
+    var user = this;
+
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT, function(err, salt) {
+        if (err) return next(err);
+
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err) return next(err);
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
+})
 
 userSchema.methods.comparepassword=function(password,cb){
     bcrypt.compare(password,this.password,function(err,isMatch){
@@ -81,3 +128,4 @@ userSchema.methods.deleteToken=function(token,cb){
 }
 
 
+module.exports=mongoose.model('User',userSchema);
