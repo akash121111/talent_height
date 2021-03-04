@@ -12,10 +12,10 @@ const {auth} =require('./middlewares/auth');
 
 const app=express();
 // app use
-app.use(bodyparser.urlencoded({extended : false}));
+app.use(cors());
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended : false}));
 app.use(cookieParser());
-app.use(cors);
 
 // database connection
 mongoose.Promise=global.Promise;
