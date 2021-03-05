@@ -28,6 +28,27 @@ router.get('/:role', async (req, res)=> {
     }
 });
 
+/**
+ * @swagger
+ * /api/users/regster:
+ *   post:
+ *     tags:
+ *       - Register 
+ *     description: Register a new users
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - firstname: akash
+ *          lastname: kumar
+ *          email:akash121@gmail.com
+ *         usename : akash1211
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Puppy'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 
 // adding new user (sign-up route)
 router.post('/register',function(req,res){
