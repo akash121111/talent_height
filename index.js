@@ -33,7 +33,7 @@ app.get('/',function(req,res){
 app.use('/api/users', userRoutes);
 
 // listening port
-const PORT=process.env.PORT||3000;
+const PORT=process.env.PORT||3002;
 app.listen(PORT,()=>{
     console.log(`app is live at ${PORT}`);
 });
