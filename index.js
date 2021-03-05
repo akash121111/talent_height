@@ -4,7 +4,7 @@ const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
 const userRoutes = require('./routes/users');
-
+const cors=require("cors");
 
 const User=require('./models/user');
 const {auth} =require('./middlewares/auth');
@@ -12,8 +12,9 @@ const {auth} =require('./middlewares/auth');
 
 const app=express();
 // app use
-app.use(bodyparser.urlencoded({extended : false}));
+app.use(cors());
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended : false}));
 app.use(cookieParser());
 
 // database connection
@@ -30,7 +31,6 @@ app.get('/',function(req,res){
 
 //user endpoints
 app.use('/api/users', userRoutes);
-
 
 // listening port
 const PORT=process.env.PORT||3000;
