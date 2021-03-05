@@ -1,28 +1,48 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const channelSchema = new mongoose.Schema({
+const channelSchema = new Schema({
     name:{
         type: String,
         required: [true,'channel name is required'],
         maxlength: 100,
     },
-    _creator:{
-        type: mongoose.Schema.Types.ObjectId, 
-        ref='users'
+    creator:{
+        type: Schema.Types.ObjectId, 
+        ref: 'users',
+        required: true
     },
     description: String,
-    subscribers: [{ type: mongoose.Schema.Types.ObjectId, ref='users'}],
+    subscribers: [{ type: Schema.Types.ObjectId, ref:'users'}],
     views: {
         type: Number,
         default: 0
     },
-    videos:[{ type: mongoose.Schema.Types.ObjectId, ref='videos'}],
-    type:{
-        type: String
+    watchtime:{
+        hours:{
+            type:Number,
+            default:0
+        },
+        minutes:{
+            type: Number,
+            default: 0
+        },
+        seconds:{
+            type: Number,
+            default: 0
+        }
     },
-    isMonotized: Boolean,
-    created_at: Date.now,
-    
+    videos:[{ type: Schema.Types.ObjectId, ref:'Video'}],
+    category:{
+        type: String,
+        enum:['sports', 'news', 'entertainment'],
+        required: [true, 'choose category']
+    },
+    isMonotized: {type: Boolean, default:false},
+    created_at: {
+        type : Date,
+        default : Date.now(),
+    }
 
 });
 

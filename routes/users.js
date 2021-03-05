@@ -43,7 +43,7 @@ router.post('/register',function(req,res){
  
         newuser.save((err,doc)=>{
             if(err) {console.log(err);
-                return res.status(400).json({ success : false});}
+                return res.status(400).json({ success : false, message: err.errors});}
             res.status(200).json({
                 succes:true,
                 user : doc
@@ -56,14 +56,15 @@ router.post('/register',function(req,res){
  // login
  router.post('/login', function(req,res){
     let token=req.cookies.auth;
-    // User.findByToken(token,(err,user)=>{
-    //     if(err) return  res(err);
-    //     if(user) return res.status(400).json({
-    //         error :true,
-    //         message:"You are already logged in"
-    //     });
+    User.findByToken(token,(err,user)=>{
+        if(err) return  res.json(err);
+        if(user) return res.status(400).json({
+            error :true,
+            message:"You are already logged in",
+            user: user,
+        });
     
-        // else{
+        else{
             User.findOne({'email':req.body.email},function(err,user){
                 if(!user) return res.json({isAuth : false, message : ' Auth failed ,email not found'});
         
@@ -71,21 +72,38 @@ router.post('/register',function(req,res){
                     if(!isMatch) return res.json({ isAuth : false,message : "password doesn't match"});
         
                 user.generateToken((err,user)=>{
-                    if(err) return res.status(400).json({err});
+                    if(err) return res.status(400).send(err);
                     res.cookie('auth',user.token).json({
                         isAuth : true,
                         id : user._id
-                        ,email : user.email,
-                        token:   user.token
+                        ,email : user.email
                     });
                 });    
             });
           });
-       // }
-   // });
+        }
+    });
 });
 
+//logout
+// router('/logout', (req, res)=>{
+//     let token = req.cookies.auth;
+//     // error handel
+
+//     //clear cookie
+    
+// });
+
 //edit
+router.put('/edit/:id', (req, res)=>{
+    const userId = req.params;
+    const user = User.findById(userId);
+    
+    // code for editing user details
+});
+
+//desable
+
 
 
 module.exports = router;
