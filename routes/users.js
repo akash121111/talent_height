@@ -30,18 +30,17 @@ router.get('/:role', async (req, res)=> {
 
 /**
  * @swagger
- * /api/users/regster:
+ * /api/puppies:
  *   post:
  *     tags:
- *       - Register 
- *     description: Register a new users
+ *       - Puppies
+ *     description: Creates a new puppy
  *     produces:
  *       - application/json
  *     parameters:
- *       - firstname: akash
- *          lastname: kumar
- *          email:akash121@gmail.com
- *         usename : akash1211
+ *       - name: puppy
+ *         description: Puppy object
+ *         in: body
  *         required: true
  *         schema:
  *           $ref: '#/definitions/Puppy'
@@ -49,8 +48,6 @@ router.get('/:role', async (req, res)=> {
  *       200:
  *         description: Successfully created
  */
-
-// adding new user (sign-up route)
 router.post('/register',function(req,res){
     // taking a user
 
