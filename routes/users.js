@@ -1,4 +1,7 @@
+const { json } = require('body-parser');
 const express = require('express');
+const jwt=require('jsonwebtoken');
+const confiq=require('../config/config').get(process.env.NODE_ENV);
 const User = require('../models/user');
 const router = express.Router();
 
@@ -53,25 +56,24 @@ router.post('/register',function(req,res){
 
     const newuser=new User(req.body);
     
-    
-   //if(newuser.password!=newuser.password2)return res.status(400).json({message: "password not match"});
+    let token=req.cookies.auth;
+
     
     User.findOne({email:newuser.email},function(err,user){
         if(user) return res.status(400).json({ auth : false, message :"email exits"});
- 
-        newuser.save((err,doc)=>{
-            if(err) {
-                console.log(err);
-                return res.status(400).json({ success : false, message: err.errors});
-            }
-            doc.generateToken((err,user)=>{
-                if(err) return res.status(400).send(err);
-                res.cookie('auth',user.token).json({
-                    isAuth : true,
-                    user: user
+
+        
+        newuser.save()
+            .then(user => {
+                var token=jwt.sign(user._id.toHexString(), confiq.SECRET);
+                user.update({token: token}).then(data => {
+                    res.status(202).cookie( 'auth',user.token).json({
+                        isAuth: true,
+                        user: user
+                    });
                 });
-            });  
-        });
+                
+            });
     });
  });
 
@@ -98,7 +100,9 @@ router.post('/register',function(req,res){
                     res.cookie('auth',user.token).json({
                         isAuth : true,
                         id : user._id
-                        ,email : user.email
+                        ,email : user.email,
+                        token : user.token
+
                     });
                 });    
             });
@@ -120,12 +124,11 @@ router.post('/register',function(req,res){
 router.put('/edit/:id', (req, res)=>{
     const userId = req.params;
     const user = User.findById(userId);
-    
+    res.json("edit");
     // code for editing user details
 });
 
 //desable
 
 
-
-module.exports = router;
+module.exports= router;

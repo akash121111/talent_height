@@ -3,18 +3,12 @@ const mongoose= require('mongoose');
 const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
-
+const userRoutes = require('./routes/users');
+const channelRoutes = require('./routes/channels');
 const cors=require("cors");
 const swaggerJSDoc = require('swagger-jsdoc');  
 
-//routes import
-const userRoutes = require('./routes/users');
-const channelRoutes = require('./routes/channels');
-
-//model import
 const User=require('./models/user');
-
-//middleware import
 const {auth} =require('./middlewares/auth');
 
 

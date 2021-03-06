@@ -50,12 +50,15 @@ router.post('/', (req, res)=>{
 
 });
 
-router.get("/", (req, res)=> {
-    var token = req.cookies.auth;
-    User.findOne({'token':token}).populate("channels").then(user => {
-        res.json(user);
-    });
+router.get("/:id", (req, res)=> {
+    
 });
+
+router.put("/edit/:id", (req, res)=> {
+
+});
+
+router.put("/edit")
 
 
 
