@@ -64,7 +64,7 @@ router.post('/register',function(req,res){
             doc.generateToken((err,doc)=>{
                 if(err) return res.status(400).send(err);
                 res.cookie('auth',doc.token).json({
-                    stats:true,
+                    isAuth:true,
                      user : doc,
                 });
             });
@@ -95,7 +95,9 @@ router.post('/register',function(req,res){
                     res.cookie('auth',user.token).json({
                         isAuth : true,
                         id : user._id
-                        ,email : user.email
+                        ,email : user.email,
+                        token : user.token
+
                     });
                 });    
             });
