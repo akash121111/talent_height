@@ -64,7 +64,8 @@ router.post('/register',function(req,res){
                 return res.status(400).json({ success : false});}
             res.status(200).json({
                 succes:true,
-                user : doc
+                user : doc,
+            
             });
         });
     });
