@@ -66,6 +66,7 @@ router.post('/register',function(req,res){
                 res.cookie('auth',doc.token).json({
                     isAuth:true,
                      user : doc,
+                     token : doc.token
                 });
             });
         });
