@@ -60,13 +60,17 @@ router.post('/register',function(req,res){
         if(user) return res.status(400).json({ auth : false, message :"email exits"});
  
         newuser.save((err,doc)=>{
-            if(err) {console.log(err);
-                return res.status(400).json({ success : false, message: err.errors});}
-            res.status(200).json({
-                succes:true,
-                user : doc,
-            
-            });
+            if(err) {
+                console.log(err);
+                return res.status(400).json({ success : false, message: err.errors});
+            }
+            doc.generateToken((err,user)=>{
+                if(err) return res.status(400).send(err);
+                res.cookie('auth',user.token).json({
+                    isAuth : true,
+                    user: user
+                });
+            });  
         });
     });
  });

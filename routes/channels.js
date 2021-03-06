@@ -18,8 +18,9 @@ router.post('/', (req, res)=>{
             //save channel
             channel.creator = user._id;
             channel.save().then((data) => {
-                user.channels.push(data._id);
-                user.save().then((result)=>{
+                const _channels = user.channels;
+                _channels.push(data._id);
+                user.update({channels: _channels}).then((result)=>{
                     return res.status(202).json({
                         success: true,
                         user: result,
