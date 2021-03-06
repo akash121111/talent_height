@@ -13,5 +13,5 @@ function  addTime(watched, newTime){
     return watched;
 }
 
-module.exports.add = addTime;
 
+module.exports.add = addTime;

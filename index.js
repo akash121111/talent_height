@@ -5,6 +5,7 @@ const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
 const userRoutes = require('./routes/users');
 const channelRoutes = require('./routes/channels');
+const excelRoutes = require('./routes/excels');
 const cors=require("cors");
 const swaggerJSDoc = require('swagger-jsdoc');  
 
@@ -65,6 +66,13 @@ app.get('/swagger.json', function(req, res) {
 //user endpoints
 app.use('/api/users', userRoutes);
 app.use('/api/channels',channelRoutes);
+
+
+
+//upload excel files routes
+
+app.use('/api/excel', excelRoutes);
+
 
 // listening port
 const PORT=process.env.PORT||3001;
