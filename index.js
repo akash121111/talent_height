@@ -3,19 +3,13 @@ const mongoose= require('mongoose');
 const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
-
+const userRoutes = require('./routes/users');
+const channelRoutes = require('./routes/channels');
 const cors=require("cors");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-//routes import
-const userRoutes = require('./routes/users');
-const channelRoutes = require('./routes/channels');
-
-//model import
 const User=require('./models/user');
-
-//middleware import
 const {auth} =require('./middlewares/auth');
 
 
@@ -64,16 +58,12 @@ app.get('/',function(req,res){
     res.status(200).send(`Welcome to login , sign-up api`);
 });
 
-<<<<<<< HEAD
 app.get('/swagger.json', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
 
 //user endpoints
-=======
-//endpoints
->>>>>>> 0567395a1a4cf63e612dc6f1f5ccd8f9d8dc5e93
 app.use('/api/users', userRoutes);
 app.use('/api/channels',channelRoutes);
 

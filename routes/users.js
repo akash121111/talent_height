@@ -53,19 +53,20 @@ router.post('/register',function(req,res){
 
     const newuser=new User(req.body);
     
-    
-   //if(newuser.password!=newuser.password2)return res.status(400).json({message: "password not match"});
+    let token=req.cookies.auth;
+
     
     User.findOne({email:newuser.email},function(err,user){
         if(user) return res.status(400).json({ auth : false, message :"email exits"});
  
         newuser.save((err,doc)=>{
-            if(err) {console.log(err);
-                return res.status(400).json({ success : false, message: err.errors});}
-            res.status(200).json({
-                succes:true,
-                user : doc,
-            
+
+            doc.generateToken((err,doc)=>{
+                if(err) return res.status(400).send(err);
+                res.cookie('auth',doc.token).json({
+                    stats:true,
+                     user : doc,
+                });
             });
         });
     });
@@ -76,7 +77,6 @@ router.post('/register',function(req,res){
  router.post('/login', function(req,res){
     let token=req.cookies.auth;
     User.findByToken(token,(err,user)=>{
-<<<<<<< HEAD
         if(err) return  res(err);
         if(user) return res.status(400).json({
             error :true,
@@ -84,16 +84,6 @@ router.post('/register',function(req,res){
         });
     
          else{
-=======
-        if(err) return  res.json(err);
-        if(user) return res.status(400).json({
-            error :true,
-            message:"You are already logged in",
-            user: user,
-        });
-    
-        else{
->>>>>>> 0567395a1a4cf63e612dc6f1f5ccd8f9d8dc5e93
             User.findOne({'email':req.body.email},function(err,user){
                 if(!user) return res.json({isAuth : false, message : ' Auth failed ,email not found'});
         
@@ -110,11 +100,7 @@ router.post('/register',function(req,res){
                 });    
             });
           });
-<<<<<<< HEAD
        }
-=======
-        }
->>>>>>> 0567395a1a4cf63e612dc6f1f5ccd8f9d8dc5e93
     });
 });
 
@@ -131,12 +117,11 @@ router.post('/register',function(req,res){
 router.put('/edit/:id', (req, res)=>{
     const userId = req.params;
     const user = User.findById(userId);
-    
+    res.json("edit");
     // code for editing user details
 });
 
 //desable
 
 
-
-module.exports = router;
+module.exports= router;
