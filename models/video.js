@@ -31,7 +31,7 @@ const mongoose = require('mongoose');
             type: Number,
             default: 0,
         },
-        videoLink:{
+        videolink:{
             type: String,
             required: true,
         },

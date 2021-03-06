@@ -72,6 +72,18 @@ router.get("/:id", async (req, res)=> {
     }
 });
 
+router.get("/:id/videos", async (req, res)=>{
+    try{
+        var id = req.params.id;
+
+        // populate channel by videos
+
+
+    }catch(err){
+        res.status(400).json(err);
+    }
+})
+
 
 
 router.put("/edit/:id", async (req, res)=> {
@@ -89,7 +101,7 @@ router.put("/edit/:id", async (req, res)=> {
 router.delete("/delete/:id", async (res, req)=> {
     try{
         var id = req.params.id;
-        const channel = await User.findById(id);
+        await Channel.deleteOne({_id: id});
         res.json(channel);
 
     }catch(err){
