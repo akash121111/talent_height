@@ -1,6 +1,5 @@
 const express = require('express');
 const Channel = require('../models/channel');
-const user = require('../models/user');
 const User = require('../models/user');
 const helper = require('../util/_helper');
 const router = express.Router();
@@ -50,15 +49,54 @@ router.post('/', (req, res)=>{
 
 });
 
-router.get("/:id", (req, res)=> {
-    
+router.get("/", async (req, res)=>{
+    try{
+        const channel = await Channel.find();
+        res.json(channel);
+
+    }catch(err){
+        console.log(err);
+        res.json({message: err});
+    }
+})
+
+router.get("/:id", async (req, res)=> {
+    try{
+        const id = req.params.id;
+        const channel = await Channel.findById(id);
+        res.json(channel);
+
+    }catch(err){
+        console.log(err);
+        res.json({message: err});
+    }
 });
 
-router.put("/edit/:id", (req, res)=> {
 
+
+router.put("/edit/:id", async (req, res)=> {
+    try{
+        var id = req.params.id;
+        const channel = await User.findById(id);
+        res.json(channel);
+
+    }catch(err){
+        console.log(err);
+        res.json({message: err});
+    }
 });
 
-router.put("/edit")
+router.delete("/delete/:id", async (res, req)=> {
+    try{
+        var id = req.params.id;
+        const channel = await User.findById(id);
+        res.json(channel);
+
+    }catch(err){
+        console.log(err);
+        res.json({message: err});
+    }
+});
 
 
 
