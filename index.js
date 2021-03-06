@@ -3,12 +3,19 @@ const mongoose= require('mongoose');
 const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
-const userRoutes = require('./routes/users');
+
 const cors=require("cors");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+//routes import
+const userRoutes = require('./routes/users');
+const channelRoutes = require('./routes/channels');
+
+//model import
 const User=require('./models/user');
+
+//middleware import
 const {auth} =require('./middlewares/auth');
 
 
@@ -64,6 +71,7 @@ app.get('/swagger.json', function(req, res) {
 
 //user endpoints
 app.use('/api/users', userRoutes);
+app.use('/api/channels',channelRoutes);
 
 // listening port
 const PORT=process.env.PORT||3001;

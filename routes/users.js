@@ -3,7 +3,7 @@ const User = require('../models/user');
 const router = express.Router();
 
 //get users
-router.get('/abc', async (req, res)=>{
+router.get('/', async (req, res)=>{
     try{
         const users = await User.find();
         res.json(users);
@@ -61,7 +61,7 @@ router.post('/register',function(req,res){
  
         newuser.save((err,doc)=>{
             if(err) {console.log(err);
-                return res.status(400).json({ success : false});}
+                return res.status(400).json({ success : false, message: err.errors});}
             res.status(200).json({
                 succes:true,
                 user : doc,
@@ -90,12 +90,11 @@ router.post('/register',function(req,res){
                     if(!isMatch) return res.json({ isAuth : false,message : "password doesn't match"});
         
                 user.generateToken((err,user)=>{
-                    if(err) return res.status(400).json({err});
+                    if(err) return res.status(400).send(err);
                     res.cookie('auth',user.token).json({
                         isAuth : true,
                         id : user._id
-                        ,email : user.email,
-                        token:   user.token
+                        ,email : user.email
                     });
                 });    
             });
@@ -104,7 +103,25 @@ router.post('/register',function(req,res){
     });
 });
 
+//logout
+// router('/logout', (req, res)=>{
+//     let token = req.cookies.auth;
+//     // error handel
+
+//     //clear cookie
+    
+// });
+
 //edit
+router.put('/edit/:id', (req, res)=>{
+    const userId = req.params;
+    const user = User.findById(userId);
+    
+    // code for editing user details
+});
+
+//desable
+
 
 
 module.exports = router;

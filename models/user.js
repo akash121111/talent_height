@@ -39,6 +39,20 @@ const userSchema=mongoose.Schema({
     image:{
         type: String,
     },
+    watchtime:{
+        hours:{
+            type: Number,
+            default: 0
+        },
+        minutes:{
+            type: Number,
+            default: 0
+        },
+        seconds:{
+            type: Number,
+            default: 0
+        }
+    },
     channels:[{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'channels',
@@ -56,7 +70,8 @@ const userSchema=mongoose.Schema({
     },
     token:{
         type: String
-    }
+    },
+    isEnable: Boolean,
 });
 
 userSchema.pre('save', function(next) {
@@ -128,4 +143,4 @@ userSchema.methods.deleteToken=function(token,cb){
 }
 
 
-module.exports=mongoose.model('User',userSchema);
+module.exports = mongoose.model('User',userSchema);
