@@ -28,8 +28,26 @@ router.get('/:role', async (req, res)=> {
     }
 });
 
-
-// adding new user (sign-up route)
+/**
+ * @swagger
+ * /api/puppies:
+ *   post:
+ *     tags:
+ *       - Puppies
+ *     description: Creates a new puppy
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: puppy
+ *         description: Puppy object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Puppy'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 router.post('/register',function(req,res){
     // taking a user
 
@@ -46,7 +64,8 @@ router.post('/register',function(req,res){
                 return res.status(400).json({ success : false, message: err.errors});}
             res.status(200).json({
                 succes:true,
-                user : doc
+                user : doc,
+            
             });
         });
     });
@@ -57,14 +76,13 @@ router.post('/register',function(req,res){
  router.post('/login', function(req,res){
     let token=req.cookies.auth;
     User.findByToken(token,(err,user)=>{
-        if(err) return  res.json(err);
+        if(err) return  res(err);
         if(user) return res.status(400).json({
             error :true,
-            message:"You are already logged in",
-            user: user,
+            message:"You are already logged in"
         });
     
-        else{
+         else{
             User.findOne({'email':req.body.email},function(err,user){
                 if(!user) return res.json({isAuth : false, message : ' Auth failed ,email not found'});
         
@@ -81,7 +99,7 @@ router.post('/register',function(req,res){
                 });    
             });
           });
-        }
+       }
     });
 });
 

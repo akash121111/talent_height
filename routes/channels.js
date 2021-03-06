@@ -54,8 +54,8 @@ router.get("/", (req, res)=> {
     User.findOne({'token':token}).populate("channels").then(user => {
         res.json(user);
     });
-    
-
 });
+
+
 
 module.exports = router;
