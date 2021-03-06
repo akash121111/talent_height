@@ -69,7 +69,8 @@ router.post('/register',function(req,res){
                 user.update({token: token}).then(data => {
                     res.status(202).cookie( 'auth',user.token).json({
                         isAuth: true,
-                        user: data
+                        user: user,
+                        token: token
                     });
                 });
                 
