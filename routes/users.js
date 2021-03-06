@@ -1,4 +1,7 @@
+const { json } = require('body-parser');
 const express = require('express');
+const jwt=require('jsonwebtoken');
+const confiq=require('../config/config').get(process.env.NODE_ENV);
 const User = require('../models/user');
 const router = express.Router();
 
@@ -58,18 +61,19 @@ router.post('/register',function(req,res){
     
     User.findOne({email:newuser.email},function(err,user){
         if(user) return res.status(400).json({ auth : false, message :"email exits"});
- 
-        newuser.save((err,doc)=>{
 
-            doc.generateToken((err,doc)=>{
-                if(err) return res.status(400).send(err);
-                res.cookie('auth',doc.token).json({
-                    isAuth:true,
-                     user : doc,
-                     token : doc.token
+        
+        newuser.save()
+            .then(user => {
+                var token=jwt.sign(user._id.toHexString(), confiq.SECRET);
+                user.update({token: token}).then(data => {
+                    res.status(202).cookie( 'auth',user.token).json({
+                        isAuth: true,
+                        user: user
+                    });
                 });
+                
             });
-        });
     });
  });
 

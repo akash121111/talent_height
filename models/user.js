@@ -72,6 +72,11 @@ const userSchema=mongoose.Schema({
         type: String
     },
     isEnable: Boolean,
+    bankingdetails:{
+        name: String,
+        accountNo: Number,
+        ifsc: String
+    }
 });
 
 userSchema.pre('save', function(next) {

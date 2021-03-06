@@ -6,8 +6,7 @@ const db=require('./config/config').get(process.env.NODE_ENV);
 const userRoutes = require('./routes/users');
 const channelRoutes = require('./routes/channels');
 const cors=require("cors");
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');  
 
 const User=require('./models/user');
 const {auth} =require('./middlewares/auth');
