@@ -16,4 +16,6 @@ const commentSchema = new mongoose.Schema({
         default: 0,
     },
     replay:[{type: mongoose.Schema.Types.ObjectId, ref='comments'}],
-})
+});
+
+module.exports = mongoose.model("Comment", commentSchema);

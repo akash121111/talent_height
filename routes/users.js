@@ -122,10 +122,14 @@ router.post('/register',function(req,res){
 // });
 
 //edit
-router.put('/edit/:id', (req, res)=>{
-    const userId = req.params;
-    const user = User.findById(userId);
-    res.json("edit");
+router.put('/edit/:id', async (req, res)=>{
+    const userId = req.params.id;
+    
+    try {
+        
+    } catch (error) {
+        
+    }
     // code for editing user details
 });
 
