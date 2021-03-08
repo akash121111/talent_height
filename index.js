@@ -16,6 +16,8 @@ const channelRoutes = require('./routes/channels');
 const videoRoutes = require('./routes/videos');
 const commentRoutes = require('./routes/comment');
 
+const excelRoutes = require('./routes/excels');
+
 
 const app=express();
 
@@ -77,7 +79,7 @@ app.use('/api/comments',commentRoutes);
 
 //upload excel files routes
 
-app.use('/api', excelRoutes);
+app.use('/api/excel', excelRoutes);
 
 
 // listening port

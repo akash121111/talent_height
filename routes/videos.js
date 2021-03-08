@@ -9,34 +9,35 @@ const uploadFile = require('../middlewares/upload');
 router.post('/:id', async (req, res)=>{
     let token = req.cookies.auth;
     let id = req.params.id;
+    res.json(token);
     //check user is loged in or not
-    User.findByToken(token, (err, user)=>{
-        if(err) return res.json(err);
-        if(user && user.role=='creater'){
-            const video = new Video(req.body);
-            try{
-                await uploadFile(req, res);
-                if (req.file == undefined) {
-                    return res.status(400).send({ message: "Please upload a file!" });
-                }
-                video.videolink = baseUrl+
-                res.status(200).json({
-                    message: "Uploaded the file successfully: " + req.file.originalname,
-                });
-            }catch(err){
-                return res.status(400).json(err);
-            }
+    // User.findByToken(token, (err, user)=>{
+    //     if(err) return res.json(err);
+    //     if(user && user.role=='creater'){
+    //         const video = new Video(req.body);
+    //         try{
+    //             await uploadFile(req, res);
+    //             if (req.file == undefined) {
+    //                 return res.status(400).send({ message: "Please upload a file!" });
+    //             }
+    //             video.videolink = baseUrl+
+    //             res.status(200).json({
+    //                 message: "Uploaded the file successfully: " + req.file.originalname,
+    //             });
+    //         }catch(err){
+    //             return res.status(400).json(err);
+    //         }
             
             
-        }
-        else{
-            return res.status(400).json({
-                error: true,
-                message: "log in first and create a channel"
-            })
-        }
-    })
-    const channel = new Channel(req.body);
+    //     }
+    //     else{
+    //         return res.status(400).json({
+    //             error: true,
+    //             message: "log in first and create a channel"
+    //         })
+    //     }
+    // })
+    // const channel = new Channel(req.body);
 
 });
 
