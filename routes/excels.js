@@ -6,7 +6,23 @@
     var multer = require('multer');
     var xlstojson = require("xls-to-json-lc");
     var xlsxtojson = require("xlsx-to-json-lc");
+    const User = require('../models/user');
     app.use(bodyParser.json());
+
+    function loaddata(data) {
+
+        try {
+          data.forEach(element => {
+            var user = new User(element);
+            user.save();
+          });
+          console.log('Done!');
+         
+        } catch(e) {
+          console.log(e);
+         
+        }
+      };
     
     var storage = multer.diskStorage({ //multers disk storage settings
         destination: function (req, file, cb) {
@@ -29,7 +45,7 @@
     /** API path that will upload the files */
     router.post('/upload', function(req, res) {
         var exceltojson;
-        console.log("hello");
+        
         upload(req,res,function(err){
             if(err){
                  res.json({error_code:1,err_desc:err});
@@ -58,7 +74,7 @@
                     if(err) {
                         return res.json({error_code:1,err_desc:err, data: null});
                     }
-                    
+                    loaddata(result);
                     res.json({error_code:0,err_desc:null, data: result});
                 });
             } catch (e){
