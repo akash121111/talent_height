@@ -73,8 +73,15 @@ app.use('/api/channels',channelRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/comments',commentRoutes);
 
+
+
+//upload excel files routes
+
+app.use('/api', excelRoutes);
+
+
 // listening port
-const PORT=process.env.PORT||3001;
+const PORT=process.env.PORT||3002;
 app.listen(PORT,()=>{
     console.log(`app is live at ${PORT}`);
 });
