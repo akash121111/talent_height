@@ -60,6 +60,10 @@ const userSchema=mongoose.Schema({
             return this.role == 'creator';
         }
     }],
+    subscriptions:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'channels',
+    }],
     wallet:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'wallets'

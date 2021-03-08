@@ -67,10 +67,10 @@ router.post('/register',function(req,res){
             .then(user => {
                 var token=jwt.sign(user._id.toHexString(), confiq.SECRET);
                 user.update({token: token}).then(data => {
-                    res.status(202).cookie( 'auth',user.token).json({
+                    res.cookie( 'auth',token).json({
                         isAuth: true,
                         user: user,
-                        token: token
+                        token: token     
                     });
                 });
                 
@@ -113,13 +113,22 @@ router.post('/register',function(req,res){
 });
 
 //logout
-// router('/logout', (req, res)=>{
-//     let token = req.cookies.auth;
-//     // error handel
-
-//     //clear cookie
-    
-// });
+router.get('/logout', (req, res)=>{
+    let token = req.cookies.auth;
+    const user = User.findByToken(token);
+    user.update({token: ""})
+        .then(data => {
+            res.status(202).json({
+                success: true,
+                message: "you are log out",
+            });
+        }).catch(err => {
+            res.status(400).json({
+                success: false,
+                message: err
+            });
+        })
+});
 
 //edit
 router.put('/edit/:id', async (req, res)=>{

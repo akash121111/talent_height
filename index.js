@@ -14,7 +14,7 @@ const {auth} =require('./middlewares/auth');
 const userRoutes = require('./routes/users');
 const channelRoutes = require('./routes/channels');
 const videoRoutes = require('./routes/videos');
-const commentRoutes = require('./routes/comment');
+const commentRoutes = require('./routes/comments');
 
 const excelRoutes = require('./routes/excels');
 

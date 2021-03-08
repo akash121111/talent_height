@@ -3,41 +3,65 @@ const Channel = require('../models/channel');
 const User = require('../models/user');
 const Video = require('../models/video');
 const helper = require('../util/_helper');
+const multer = require('multer');
+const { base } = require('../models/user');
+const { json } = require('body-parser');
+const upload = multer({dest: 'uploads/'});
 const router = express.Router();
-const uploadFile = require('../middlewares/upload');
+// const uploadFile = require('../middlewares/upload');
 
-router.post('/:id', async (req, res)=>{
+router.post('/:id', upload.single("videoFile"), async (req, res)=>{
     let token = req.cookies.auth;
     let id = req.params.id;
     res.json(token);
     //check user is loged in or not
-    // User.findByToken(token, (err, user)=>{
-    //     if(err) return res.json(err);
-    //     if(user && user.role=='creater'){
-    //         const video = new Video(req.body);
-    //         try{
-    //             await uploadFile(req, res);
-    //             if (req.file == undefined) {
-    //                 return res.status(400).send({ message: "Please upload a file!" });
-    //             }
-    //             video.videolink = baseUrl+
-    //             res.status(200).json({
-    //                 message: "Uploaded the file successfully: " + req.file.originalname,
-    //             });
-    //         }catch(err){
-    //             return res.status(400).json(err);
-    //         }
+    User.findByToken(token, (err, user)=>{
+        if(err) return res.json(err);
+
+        if(user && user.role=='creator'){
+            
+            Channel.findById(id)
+            .then(data => {
+                try{
+                    const video = new Video(req.body);
+                    video._channel = id;
+                    video.videolink = req.baseUrl+"/upload/"+req.videoFile.originalname;
+                    video.save()
+                        .then(result=> {
+                            res.status(200).json({
+                                success: true,
+                                message: result,
+                            })
+                        })
+                        .catch(err => {
+                            res.status(404).json({
+                                success: false,
+                                message: err
+                            })
+                        });
+                }catch(err){
+                    
+                }
+                
+            })
+            .catch(err => {return res.json(err)});
             
             
-    //     }
-    //     else{
-    //         return res.status(400).json({
-    //             error: true,
-    //             message: "log in first and create a channel"
-    //         })
-    //     }
-    // })
-    // const channel = new Channel(req.body);
+            
+        }
+        if(user.role!='creator'){
+            return res.status(400).json({
+                success: false,
+                message: "create a channel first"
+            });
+        }
+        else{
+            return res.status(400).json({
+                success: false,
+                message: "log in first"
+            })
+        }
+    })
 
 });
 
