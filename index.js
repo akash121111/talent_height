@@ -71,11 +71,11 @@ app.use('/api/channels',channelRoutes);
 
 //upload excel files routes
 
-app.use('/api/excel', excelRoutes);
+app.use('/api', excelRoutes);
 
 
 // listening port
-const PORT=process.env.PORT||3001;
+const PORT=process.env.PORT||3002;
 app.listen(PORT,()=>{
     console.log(`app is live at ${PORT}`);
 });
