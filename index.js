@@ -16,6 +16,8 @@ const channelRoutes = require('./routes/channels');
 const videoRoutes = require('./routes/videos');
 const commentRoutes = require('./routes/comments');
 
+const excelRoutes = require('./routes/excels');
+
 
 const app=express();
 
@@ -73,8 +75,15 @@ app.use('/api/channels',channelRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/comments',commentRoutes);
 
+
+
+//upload excel files routes
+
+app.use('/api/excel', excelRoutes);
+
+
 // listening port
-const PORT=process.env.PORT||3001;
+const PORT=process.env.PORT||3002;
 app.listen(PORT,()=>{
     console.log(`app is live at ${PORT}`);
 });

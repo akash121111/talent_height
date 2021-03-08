@@ -13,6 +13,7 @@ const router = express.Router();
 router.post('/:id', upload.single("videoFile"), async (req, res)=>{
     let token = req.cookies.auth;
     let id = req.params.id;
+    res.json(token);
     //check user is loged in or not
     User.findByToken(token, (err, user)=>{
         if(err) return res.json(err);
