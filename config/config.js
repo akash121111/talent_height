@@ -5,7 +5,10 @@ const config={
     },
     default : {
         SECRET: 'mysecretkey',
-        DATABASE: 'mongodb+srv://talent:kamal1234@cluster0.walu6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+        DATABASE: 'mongodb+srv://talent:kamal1234@cluster0.walu6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+        BUCKET_NAME = '',
+        IAM_USER_KEY = 'APKAI6M6TG7O3SEMQYIQA',
+        IAM_USER_SECRET = '',
     }
 }
 
