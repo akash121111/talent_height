@@ -143,9 +143,6 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     });
 
 
-    router.get('/s',function(req,res){
-        res.status(200).send(`Welcome to login , sign-up api`);
-    });
     
 
 module.exports = router;
