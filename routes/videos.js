@@ -46,21 +46,19 @@ router.get("/", async (req, res)=>{
 })
 
 
-router.get("/:id", async (req, res)=> {
-    try{
-        const range = req.headers.range;
+router.get("/:id", (req, res)=> {
+    
+    const range = req.headers.range;
+
   if (!range) {
     res.status(400).send("Requires Range header");
   }
 
   // get video stats (about 61MB)
   const id = req.params.id;
-  await Video.findById(id)
-    .then(video ={
-        
-    })
-    .catch(err => console.log(err));
-  const videoPath = video.videolink;
+  Video.findById(id)
+    .then(video =>{
+        const videoPath = video.videolink;
   const videoSize = fs.statSync(videoPath).size;
 
   // Parse Range
@@ -87,10 +85,11 @@ router.get("/:id", async (req, res)=> {
   // Stream the video chunk to the client
   videoStream.pipe(res);
 
-    }catch(err){
-        console.log(err);
-        res.json({message: err});
-    }
+    })
+    .catch(err => console.log(err));
+  
+
+    
 });
 
 
