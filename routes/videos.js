@@ -4,64 +4,33 @@ const User = require('../models/user');
 const Video = require('../models/video');
 const helper = require('../util/_helper');
 const multer = require('multer');
-const { base } = require('../models/user');
-const { json } = require('body-parser');
-const upload = multer({dest: 'uploads/'});
+const upload = multer({dest: 'resources/static/assets/uploads/'});
 const router = express.Router();
+const fs = require("fs");
 // const uploadFile = require('../middlewares/upload');
 
 router.post('/:id', upload.single("videoFile"), async (req, res)=>{
     let token = req.cookies.auth;
-    let id = req.params.id;
-    res.json(token);
+    const id = req.params.id;
+    const video = new Video(req.body);
+    video.videolink = req.file.path;
+    video._channel = id;
     //check user is loged in or not
-    User.findByToken(token, (err, user)=>{
-        if(err) return res.json(err);
 
-        if(user && user.role=='creator'){
-            
-            Channel.findById(id)
-            .then(data => {
-                try{
-                    const video = new Video(req.body);
-                    video._channel = id;
-                    video.videolink = req.baseUrl+"/upload/"+req.videoFile.originalname;
-                    video.save()
-                        .then(result=> {
-                            res.status(200).json({
-                                success: true,
-                                message: result,
-                            })
-                        })
-                        .catch(err => {
-                            res.status(404).json({
-                                success: false,
-                                message: err
-                            })
-                        });
-                }catch(err){
-                    
-                }
-                
+    await video.save()
+        .then(data=> {
+            res.status(200).json({
+                success: true,
+                message: data,
             })
-            .catch(err => {return res.json(err)});
-            
-            
-            
-        }
-        if(user.role!='creator'){
-            return res.status(400).json({
+        })
+        .catch(err=> {
+            res.status(400).json({
                 success: false,
-                message: "create a channel first"
-            });
-        }
-        else{
-            return res.status(400).json({
-                success: false,
-                message: "log in first"
+                message: err
             })
-        }
-    })
+        });
+
 
 });
 
@@ -79,9 +48,44 @@ router.get("/", async (req, res)=>{
 
 router.get("/:id", async (req, res)=> {
     try{
-        const id = req.params.id;
-        const video = await Video.findById(id);
-        res.json(video);
+        const range = req.headers.range;
+  if (!range) {
+    res.status(400).send("Requires Range header");
+  }
+
+  // get video stats (about 61MB)
+  const id = req.params.id;
+  await Video.findById(id)
+    .then(video ={
+        
+    })
+    .catch(err => console.log(err));
+  const videoPath = video.videolink;
+  const videoSize = fs.statSync(videoPath).size;
+
+  // Parse Range
+  // Example: "bytes=32324-"
+  const CHUNK_SIZE = 10 ** 6; // 1MB
+  const start = Number(range.replace(/\D/g, ""));
+  const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+  // Create headers
+  const contentLength = end - start + 1;
+  const headers = {
+    "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+    "Accept-Ranges": "bytes",
+    "Content-Length": contentLength,
+    "Content-Type": "video/mp4",
+  };
+
+  // HTTP Status 206 for Partial Content
+  res.writeHead(206, headers);
+
+  // create video read stream for this particular chunk
+  const videoStream = fs.createReadStream(videoPath, { start, end });
+
+  // Stream the video chunk to the client
+  videoStream.pipe(res);
 
     }catch(err){
         console.log(err);

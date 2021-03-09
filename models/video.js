@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Channel = require('../models/channel');
 
  const videoSchema = new mongoose.Schema({
         _channel:{  type: mongoose.Schema.Types.ObjectId, ref:'channels'},
@@ -46,4 +47,28 @@ const mongoose = require('mongoose');
             type: Date,
             default: Date.now(),
         }
- })
+ });
+
+ videoSchema.post('save', async function(next) {
+    console.log(next);
+    await Channel.findById(next._channel)
+        .then(data => {
+            console.log(" channel is available");
+            console.log(data);
+            const videos = data.videos;
+            console.log(" 1");
+            videos.push(next._id);
+            console.log(" 2");
+            data.updateOne({videos: videos})
+                .then(data => {
+                    console.log(data);
+                }).catch(err => {
+                    console.log(err);
+                });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+})
+
+ module.exports = mongoose.model("Video", videoSchema);
