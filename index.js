@@ -4,7 +4,10 @@ const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
 const cors=require("cors");
-const swaggerJSDoc = require('swagger-jsdoc');  
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerDocument = require('./swagger.json');  
+const swaggerUi = require('swagger-ui-express');
+
 
 const User=require('./models/user');
 const {auth} =require('./middlewares/auth');
@@ -22,29 +25,17 @@ const excelRoutes = require('./routes/excels');
 const app=express();
 
 
-// swagger definition
-var swaggerDefinition = {
-    info: {
-      title: 'Talent Heght API',
-      version: '1.0.0',
-      description: 'Demonstrating api',
-    },
-    host: 'https://talentheight.herokuapp.com/',
-    basePath: '/',
-  };
+
   
   // options for the swagger docs
   var options = {
     // import swaggerDefinitions
-    swaggerDefinition: swaggerDefinition,
-    // path to the API docs
-    apis: ['./routes/*.js'],
+    swaggerDefinition: swaggerDocument,
+    
+    apis: ['./router/*.js'],
   };
-  
-  // initialize swagger-jsdoc
-  var swaggerSpec = swaggerJSDoc(options);
 
-
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(options));
 
 // app use
 app.use(cors());
@@ -58,18 +49,18 @@ mongoose.connect(db.DATABASE,{ useNewUrlParser: true,useUnifiedTopology:true },f
     if(err) console.log(err);
     console.log("database is connected");
 });
-
-
+app.use(express.static('public')); 
+app.use('static/assets/images', express.static('images'));  
 app.get('/',function(req,res){
     res.status(200).send(`Welcome to login , sign-up api`);
 });
 
-app.get('/swagger.json', function(req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  });
-
 //user endpoints
+app.get('/users', (req, res)=>{
+  res.json({
+    message: "data"
+  })
+});
 app.use('/api/users', userRoutes);
 app.use('/api/channels',channelRoutes);
 app.use('/api/videos', videoRoutes);

@@ -49,6 +49,26 @@ const Channel = require('../models/channel');
         }
  });
 
+//  videoSchema.pre('save', async (next)=> {
+//      var video = this;
+//      const filelink = video.videolink;
+//      const filePath = "resources/static/assets/";
+//      const filename = Date.now();
+//      console.log("hello2");
+//      console.log(video.thumbnail);
+//     if(typeof video.thumbnail != 'undefined' && video.thumbnail){}
+//         console.lgo("here");
+//         await exec(`bin/ffmpeg -i ${filelink} -ss 00:00:04.00 -r 1 -an -vframes 1 -f mjpeg ${filePath}/images/${filename}.jpg`, (error, stdout, stderr) => {
+//             if(err){
+//                 console.log(filelink);
+//                 return;
+//             }
+//             consple.log("hello3");
+//             video.thumbnail = filePath+"/images/"+filename.jpg;
+//             next();    
+//         });
+//  });
+
  videoSchema.post('save', async function(next) {
     console.log(next);
     await Channel.findById(next._channel)

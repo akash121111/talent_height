@@ -4,9 +4,11 @@ const User = require('../models/user');
 const Video = require('../models/video');
 const helper = require('../util/_helper');
 const multer = require('multer');
-const upload = multer({dest: 'resources/static/assets/uploads/'});
+const upload = multer({dest: 'public/static/assets/uploads/'});
 const router = express.Router();
 const fs = require("fs");
+const thumbsupply = require("thumbsupply");
+// const { exec } = require('child_process');
 // const uploadFile = require('../middlewares/upload');
 
 router.post('/:id', upload.single("videoFile"), async (req, res)=>{
@@ -15,7 +17,19 @@ router.post('/:id', upload.single("videoFile"), async (req, res)=>{
     const video = new Video(req.body);
     video.videolink = req.file.path;
     video._channel = id;
+
+
     //check user is loged in or not
+
+   await thumbsupply.generateThumbnail(video.videolink, {
+        size: thumbsupply.ThumbSize.MEDIUM, // or ThumbSize.LARGE
+        timestamp: "10%", // or `30` for 30 seconds
+        forceCreate: true,
+        cacheDir: "public/static/assets/images",
+        mimetype: "video/mp4"
+    }).then(data => {
+        video.thumbnail = data;
+    })
 
     await video.save()
         .then(data=> {
@@ -34,15 +48,36 @@ router.post('/:id', upload.single("videoFile"), async (req, res)=>{
 
 });
 
-router.get("/", async (req, res)=>{
-    try{
-        const video = await Video.find();
-        res.json(video);
+router.get("/channel/:id", (req, res)=> {
+    
+    const id = req.params.id;
+    Video.find({_channel: id})
+        .then(data => {
+            res.status(200).json({
+                success: true,
+                message: data
+            })
+        })
+        .catch(err => {
+            res.status(400).json({
+                success: false,
+                message: err
+            })
+        });
 
-    }catch(err){
-        console.log(err);
-        res.json({message: err});
-    }
+    
+});
+
+router.get("/", async (req, res)=>{
+    
+        await Video.find()
+            .then(data => {
+                res.status(202).json(data);
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(404).json({message: err});
+            });
 })
 
 

@@ -8,6 +8,7 @@
   "basePath": "/",
   "swagger": "2.0",
   "paths": { },
+  "openapi": "3.0.0",
   "definitions": { },
   "responses": { },
   "parameters": { },
