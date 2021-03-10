@@ -1,64 +1,56 @@
 const AWS = require('aws-sdk');
 const Busboy = require('busboy');
+const confiq=require('../config/config').get(process.env.NODE_ENV);
+const S3FS = require('s3fs');
 
 
-function uploadToS3(file) {
-  let s3bucket = new AWS.S3({
-    accessKeyId: IAM_USER_KEY,
-    secretAccessKey: IAM_USER_SECRET,
-    Bucket: BUCKET_NAME
-  });
-  s3bucket.createBucket(function () {
-      var params = {
-        Bucket: BUCKET_NAME,
-        Key: file.name,
-        Body: file.data
-      };
-      s3bucket.upload(params, function (err, data) {
-        if (err) {
-          console.log('error in callback');
-          console.log(err);
-        }
-        console.log('success');
-        console.log(data);
-      });
-  });
-}
+
+s3fsImpl = new S3FS(config.bucketName, {
+  accessKeyId,
+  secretAccessKey,
+})
 
 
-app.post('/upload', function (req, res, next) {
-    // This grabs the additional parameters so in this case passing in
-    // "element1" with a value.
-    const file = req.body.file;
 
-    var busboy = new Busboy({ headers: req.headers });
+  router.get("/:id", (req, res)=> {
+    
+    const range = 'undefined' !== typeof req.headers.range ? req.headers.range : 'bytes=0-';
 
-    // The file upload has completed
-    busboy.on('finish', function() {
-      console.log('Upload finished');
+  if (!range) {
+    res.status(400).send("Requires Range header");
+  }
+
+
+
+var positions = range.replace(/bytes=/, "").split("-");
+var start = parseInt(positions[0], 10);
+var total = details.ContentLength;
+var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+var chunksize = (end - start) + 1;
+
+  // Create headers
+
+
+res.setHeader("Content-Type", contentType);
+res.status(206);
+res.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + total);
+res.setHeader("Accept-Ranges", "bytes");
+res.setHeader("Content-Length", chunksize);
+
+
+s3fsImpl.createReadStream(id,{ start: start, end: end }).pipe(res);
+
+
+});
       
-      // Your files are stored in req.files. In this case,
-      // you only have one and it's req.files.element2:
-      // This returns:
-      // {
-      //    element2: {
-      //      data: ...contents of the file...,
-      //      name: 'Example.jpg',
-      //      encoding: '7bit',
-      //      mimetype: 'image/png',
-      //      truncated: false,
-      //      size: 959480
-      //    }
-      // }
-      
-      // Grabs your file object from the request.
-      const file = req.files.element2;
-      console.log(file);
-      
-      // Begins the upload to the AWS S3
-      uploadToS3(file);
-    });
 
-    req.pipe(busboy);
-  });
+
+
+
+
+
+
+
+
+
 
