@@ -4,9 +4,9 @@ const bodyparser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/config').get(process.env.NODE_ENV);
 const cors=require("cors");
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerDocument = require('./swagger.json');  
-const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');  
+// const swafferDefination = require('./swagger.json');
+const swaggerUI = require('swagger-ui-express');
 
 
 const User=require('./models/user');
@@ -18,24 +18,31 @@ const userRoutes = require('./routes/users');
 const channelRoutes = require('./routes/channels');
 const videoRoutes = require('./routes/videos');
 const commentRoutes = require('./routes/comments');
-
 const excelRoutes = require('./routes/excels');
+
+const options = {
+  swaggerDefinition: {
+    info: {
+      title: "Talent Height API",
+      version: "1.0.0",
+      description: ""
+    },
+    servers:[
+      {
+        url:"http://localhost:3002"
+      }
+    ]
+  },
+  apis: ["./routes/*.js"],
+}
+
+const spec = swaggerJsDoc(options);
 
 
 const app=express();
 
-
-
-  
-  // options for the swagger docs
-  var options = {
-    // import swaggerDefinitions
-    swaggerDefinition: swaggerDocument,
-    
-    apis: ['./router/*.js'],
-  };
-
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(options));
+//swagger
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(spec));
 
 // app use
 app.use(cors());
@@ -46,7 +53,7 @@ app.use(cookieParser());
 // database connection
 mongoose.Promise=global.Promise;
 mongoose.connect(db.DATABASE,{ useNewUrlParser: true,useUnifiedTopology:true },function(err){
-    if(err) console.log(err);
+    if(err) return console.log(err);
     console.log("database is connected");
 });
 app.use(express.static('public')); 
@@ -55,12 +62,7 @@ app.get('/',function(req,res){
     res.status(200).send(`Welcome to login , sign-up api`);
 });
 
-//user endpoints
-app.get('/users', (req, res)=>{
-  res.json({
-    message: "data"
-  })
-});
+//endpoints
 app.use('/api/users', userRoutes);
 app.use('/api/channels',channelRoutes);
 app.use('/api/videos', videoRoutes);

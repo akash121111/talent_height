@@ -5,6 +5,28 @@ const confiq=require('../config/config').get(process.env.NODE_ENV);
 const User = require('../models/user');
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/puppies:
+ *   get:
+ *     tags:
+ *       - Users
+ *     description: Creates a new puppy
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: users
+ *         description: User object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/User'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
+
+
 //get users
 router.get('/', async (req, res)=>{
     try{
@@ -31,26 +53,7 @@ router.get('/:role', async (req, res)=> {
     }
 });
 
-/**
- * @swagger
- * /api/puppies:
- *   post:
- *     tags:
- *       - Puppies
- *     description: Creates a new puppy
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: puppy
- *         description: Puppy object
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/Puppy'
- *     responses:
- *       200:
- *         description: Successfully created
- */
+
 router.post('/register',function(req,res){
     // taking a user
 
